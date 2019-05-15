@@ -28,7 +28,7 @@ defmodule ProgressBar.Mixfile do
 
   defp deps do
     [
-      {:decimal, "~> 1.0"}
+      {:decimal, "~> 1.7"}
     ]
   end
 end
