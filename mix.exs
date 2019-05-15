@@ -28,7 +28,8 @@ defmodule ProgressBar.Mixfile do
 
   defp deps do
     [
-      {:decimal, "~> 1.7"}
+      {:decimal, "~> 1.7"},
+      {:ex_doc, "~> 0.20.2", only: :dev, runtime: false},
     ]
   end
 end
