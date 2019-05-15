@@ -1,13 +1,23 @@
 defmodule ProgressBar.BarFormatter do
   alias ProgressBar.Utils
 
+  def write(io_device, format, {bar, bar_color}, suffix) do
+    bar = render(format, {bar, bar_color}, suffix)
+    IO.binwrite(io_device, bar)
+  end
+
+  def write(io_device, format, {bar, bar_color, bar_percent}, {blank, blank_color}, suffix) do
+    bar = render(format, {bar, bar_color, bar_percent}, {blank, blank_color}, suffix)
+    IO.binwrite(io_device, bar)
+  end
+
   # Full-width bar, with no blank (i.e. indeterminate).
-  def write(format, {bar, bar_color}, suffix) do
-    write(format, {bar, bar_color, 100}, {"", []}, suffix)
+  def render(format, {bar, bar_color}, suffix) do
+    render(format, {bar, bar_color, 100}, {"", []}, suffix)
   end
 
   # Bar + blank.
-  def write(format, {bar, bar_color, bar_percent}, {blank, blank_color}, suffix) do
+  def render(format, {bar, bar_color, bar_percent}, {blank, blank_color}, suffix) do
     {bar_width, blank_width} = bar_and_blank_widths(format, suffix, bar_percent)
 
     full_bar = [
@@ -15,7 +25,7 @@ defmodule ProgressBar.BarFormatter do
       blank |> repeat(blank_width) |> Utils.color(blank_color)
     ]
 
-    IO.write(chardata(format, full_bar, suffix))
+    chardata(format, full_bar, suffix)
   end
 
   defp bar_and_blank_widths(format, suffix, bar_percent) do

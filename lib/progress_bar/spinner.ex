@@ -21,6 +21,7 @@ defmodule ProgressBar.Spinner do
     format = Keyword.merge(@default_format, custom_format)
 
     config = [
+      controller: Keyword.get(format, :controller_pid, self()),
       interval: format[:interval],
       render_frame: fn count -> render_frame(format, count) end,
       render_done: fn -> render_done(format[:done]) end
@@ -37,24 +38,24 @@ defmodule ProgressBar.Spinner do
     index = rem(count, length(frames))
     frame = Enum.at(frames, index)
 
-    IO.write([
+    [
       Utils.ansi_prefix(),
       Utils.color(frame, format[:spinner_color]),
       " ",
       format[:text]
-    ])
+    ]
   end
 
   defp render_done(:remove) do
-    IO.write(Utils.ansi_prefix())
+    Utils.ansi_prefix()
   end
 
   defp render_done(text) do
-    IO.write([
+    [
       Utils.ansi_prefix(),
       text,
       "\n"
-    ])
+    ]
   end
 
   defp get_frames(theme) when is_atom(theme), do: Keyword.fetch!(@themes, theme)

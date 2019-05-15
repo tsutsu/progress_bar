@@ -14,6 +14,7 @@ defmodule ProgressBar.Indeterminate do
     format = Keyword.merge(@default_format, custom_format)
 
     config = [
+      controller: Keyword.get(format, :controller_pid, self()),
       interval: format[:interval],
       render_frame: fn count -> render_frame(format, count) end,
       render_done: fn -> render_done(format) end
@@ -30,7 +31,7 @@ defmodule ProgressBar.Indeterminate do
     index = rem(count, length(parts))
     part = Enum.at(parts, index)
 
-    ProgressBar.BarFormatter.write(
+    ProgressBar.BarFormatter.render(
       format,
       {part, format[:bars_color]},
       ""
@@ -38,7 +39,7 @@ defmodule ProgressBar.Indeterminate do
   end
 
   defp render_done(format) do
-    ProgressBar.BarFormatter.write(
+    ProgressBar.BarFormatter.render(
       format,
       {format[:done], format[:done_color]},
       "\n"

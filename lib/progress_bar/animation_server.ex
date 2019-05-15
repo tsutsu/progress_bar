@@ -28,14 +28,19 @@ defmodule ProgressBar.AnimationServer do
   end
 
   def handle_call(:stop, _from, {config, count}) do
-    config[:render_done].()
+    iolist = config[:render_done].()
+
+    send(config[:controller], {:progress_bar_frame, iolist})
+
     {:stop, :normal, :ok, {config, count}}
   end
 
   # Private
 
   defp tick({config, count}) do
-    config[:render_frame].(count)
+    iolist = config[:render_frame].(count)
+
+    send(config[:controller], {:progress_bar_frame, iolist})
 
     # This timer is automatically cancelled when the server goes away.
     interval = config[:interval]
